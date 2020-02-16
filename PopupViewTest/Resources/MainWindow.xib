@@ -30,6 +30,7 @@
             <extendedEdge key="edgesForExtendedLayout"/>
             <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
             <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="17">
+                <rect key="frame" x="0.0" y="-44" width="414" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
             </navigationBar>
             <viewControllers>
@@ -39,7 +40,7 @@
                         <viewControllerLayoutGuide type="bottom" id="HIS-mZ-L41"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="39">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="725"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <switch opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="40">
@@ -103,9 +104,10 @@
                 </viewController>
             </viewControllers>
             <toolbar key="toolbar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="21">
-                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
+                <rect key="frame" x="0.0" y="725" width="414" height="49"/>
                 <autoresizingMask key="autoresizingMask"/>
             </toolbar>
+            <point key="canvasLocation" x="655" y="84"/>
         </navigationController>
         <view contentMode="scaleToFill" id="45">
             <rect key="frame" x="0.0" y="0.0" width="203" height="63"/>
@@ -123,6 +125,7 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="133" y="280"/>
         </view>
     </objects>
 </document>

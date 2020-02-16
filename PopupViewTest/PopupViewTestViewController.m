@@ -33,73 +33,74 @@
 @implementation PopupViewTestViewController
 
 - (IBAction)pushButton:(id)sender {
-	DNSLogMethod
-	
-	if (popup == nil) {
-		if (currentMessageIndex == 0) {
-			popup = [[UZPopupView alloc] initWithContentView:testContentView contentSize:CGSizeMake(203, 63)];
-			currentMessageIndex++;
-		}
-		else if (currentMessageIndex == 1) {
-			popup = [[UZPopupView alloc] initWithString:@"test message" withFontOfSize:29];
-			currentMessageIndex++;
-		}
-		else if (currentMessageIndex == 2) {
-			popup = [[UZPopupView alloc] initWithImage:[UIImage imageNamed:@"2tchSmall.png"]];
-			currentMessageIndex = 0;
-		}
-		if (modalSwitch.on)
-			[popup presentModalFromBarButtonItem:sender inView:self.view animated:animationSwitch.on];
-		else
-			[popup showFromBarButtonItem:sender inView:self.view animated:animationSwitch.on];
-		[popup addTarget:self action:@selector(didTouchPopupView:)];
-		[popup setDelegate:self];
-	}
-	else if (!modalSwitch.on) {
-		[popup dismiss:animationSwitch.on];
-		popup = nil;
-	}
+    DNSLogMethod
+    
+    if (popup == nil) {
+        if (currentMessageIndex == 0) {
+            popup = [[UZPopupView alloc] initWithContentView:testContentView contentSize:CGSizeMake(203, 63)];
+            currentMessageIndex++;
+        }
+        else if (currentMessageIndex == 1) {
+            popup = [[UZPopupView alloc] initWithString:@"test message" withFontOfSize:29];
+            currentMessageIndex++;
+        }
+        else if (currentMessageIndex == 2) {
+            popup = [[UZPopupView alloc] initWithImage:[UIImage imageNamed:@"2tchSmall.png"]];
+            currentMessageIndex = 0;
+        }
+        if (modalSwitch.on) {
+            [popup presentModalFromBarButtonItem:sender inView:self.view animated:animationSwitch.on];
+        } else {
+            [popup showFromBarButtonItem:sender inView:self.view animated:animationSwitch.on];
+        }
+        [popup addTarget:self action:@selector(didTouchPopupView:)];
+        [popup setDelegate:self];
+    }
+    else if (!modalSwitch.on) {
+        [popup dismiss:animationSwitch.on];
+        popup = nil;
+    }
 }
 
 - (void)didTouchPopupView:(UZPopupView*)sender {
-	DNSLogMethod
-	DNSLog(@"%@", sender);
+    DNSLogMethod
+    DNSLog(@"%@", sender);
 }
 
 - (void)didDismissModal:(UZPopupView*)popupview {
-	DNSLogMethod
-	if (popupview == popup) {
-		popup = nil;
-	}
+    DNSLogMethod
+    if (popupview == popup) {
+        popup = nil;
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	UITouch *touch = [touches anyObject];
-	
-	if (popup == nil) {
-		if (currentMessageIndex == 0) {
-			popup = [[UZPopupView alloc] initWithImage:[UIImage imageNamed:@"2tchSmall.png"]];
-			currentMessageIndex++;
-		}
-		else if (currentMessageIndex == 1) {
-			popup = [[UZPopupView alloc] initWithString:@"test message" withFontOfSize:16];
-			currentMessageIndex++;
-		}
-		else if (currentMessageIndex == 2) {
-			popup = [[UZPopupView alloc] initWithContentView:testContentView contentSize:CGSizeMake(203, 63)];
-			currentMessageIndex = 0;
-		}
-		if (modalSwitch.on)
-			[popup presentModalAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
-		else
-			[popup showAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
-		[popup addTarget:self action:@selector(didTouchPopupView:)];
-		[popup setDelegate:self];
-	}
-	else if (!modalSwitch.on) {
-		[popup dismiss:animationSwitch.on];
-		popup = nil;
-	}
+    UITouch *touch = [touches anyObject];
+    
+    if (popup == nil) {
+        if (currentMessageIndex == 0) {
+            popup = [[UZPopupView alloc] initWithImage:[UIImage imageNamed:@"2tchSmall.png"]];
+            currentMessageIndex++;
+        }
+        else if (currentMessageIndex == 1) {
+            popup = [[UZPopupView alloc] initWithString:@"test message" withFontOfSize:16];
+            currentMessageIndex++;
+        }
+        else if (currentMessageIndex == 2) {
+            popup = [[UZPopupView alloc] initWithContentView:testContentView contentSize:CGSizeMake(203, 63)];
+            currentMessageIndex = 0;
+        }
+        if (modalSwitch.on)
+            [popup presentModalAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
+        else
+            [popup showAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
+        [popup addTarget:self action:@selector(didTouchPopupView:)];
+        [popup setDelegate:self];
+    }
+    else if (!modalSwitch.on) {
+        [popup dismiss:animationSwitch.on];
+        popup = nil;
+    }
 }
 
 @end

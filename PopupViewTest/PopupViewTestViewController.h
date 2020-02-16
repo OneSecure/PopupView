@@ -33,13 +33,12 @@
 #import <UZPopupView/UZPopupView.h>
 
 @interface PopupViewTestViewController : UIViewController <UZPopupViewModalDelegate> {
-	UZPopupView		*popup;
-	NSArray			*messages;
-	int				currentMessageIndex;
-	IBOutlet UIView *testContentView;
-	
-	IBOutlet UISwitch *animationSwitch;
-	IBOutlet UISwitch *modalSwitch;
+    UZPopupView     *popup;
+    int             currentMessageIndex;
+    IBOutlet UIView *testContentView;
+    
+    IBOutlet UISwitch *animationSwitch;
+    IBOutlet UISwitch *modalSwitch;
 }
 
 - (IBAction)pushButton:(id)sender;

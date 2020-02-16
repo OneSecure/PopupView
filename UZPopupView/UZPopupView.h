@@ -32,29 +32,29 @@
 
 //#define _CONFIRM_REGION
 
-#define SHADOW_OFFSET					CGSizeMake(10, 10)
-#define CONTENT_OFFSET					CGSizeMake(10, 10)
-#define POPUP_ROOT_SIZE					CGSizeMake(20, 10)
+#define SHADOW_OFFSET                   CGSizeMake(10, 10)
+#define CONTENT_OFFSET                  CGSizeMake(10, 10)
+#define POPUP_ROOT_SIZE                 CGSizeMake(20, 10)
 
-#define HORIZONTAL_SAFE_MARGIN			30
+#define HORIZONTAL_SAFE_MARGIN          30
 
-#define POPUP_ANIMATION_DURATION		0.3
-#define DISMISS_ANIMATION_DURATION		0.2
+#define POPUP_ANIMATION_DURATION        0.3
+#define DISMISS_ANIMATION_DURATION      0.2
 
-#define DEFAULT_TITLE_SIZE				20
+#define DEFAULT_TITLE_SIZE              20
 
-#define ALPHA							0.6
+#define ALPHA                           0.6
 
-#define BAR_BUTTON_ITEM_UPPER_MARGIN	10
-#define BAR_BUTTON_ITEM_BOTTOM_MARGIN	5
+#define BAR_BUTTON_ITEM_UPPER_MARGIN    10
+#define BAR_BUTTON_ITEM_BOTTOM_MARGIN   5
 
 @class TouchPeekView;
 
 typedef enum {
-	UZPopupViewUp		= 1,
-	UZPopupViewDown		= 2,
-	UZPopupViewRight	= 1 << 8,
-	UZPopupViewLeft		= 2 << 8,
+    UZPopupViewUp       = 1,
+    UZPopupViewDown     = 2,
+    UZPopupViewRight    = 1 << 8,
+    UZPopupViewLeft     = 2 << 8,
 } UZPopupViewDirection;
 
 @class UZPopupView;
