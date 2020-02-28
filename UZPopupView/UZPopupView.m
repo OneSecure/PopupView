@@ -665,8 +665,7 @@
     if ([_title length]) {
         CGContextSetRGBFillColor(context, 1, 1, 1, 1);
         UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
-        UIColor *color = [UIColor whiteColor];
-        [_title drawInRect:contentRect withAttributes:@{NSFontAttributeName:font, NSForegroundColorAttributeName:color}];
+        [_title drawInRect:contentRect withAttributes:@{NSFontAttributeName:font, }];
     }
     if (_image) {
         [_image drawInRect:contentRect];

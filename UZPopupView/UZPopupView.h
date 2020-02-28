@@ -44,10 +44,10 @@
 #define DEFAULT_TITLE_SIZE              20
 
 #define ALPHA                           0.6
-#define COLOR1                          155.0/255.0
-#define COLOR2                          70.0/255.0
-#define COLOR3                          20.0/255.0
-#define COLOR4                          0.0/255.0
+#define COLOR1                          255.0/255.0
+#define COLOR2                          255.0/255.0
+#define COLOR3                          255.0/255.0
+#define COLOR4                          255.0/255.0
 
 #define BAR_BUTTON_ITEM_UPPER_MARGIN    10
 #define BAR_BUTTON_ITEM_BOTTOM_MARGIN   5

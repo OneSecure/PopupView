@@ -48,6 +48,7 @@
             popup = [[UZPopupView alloc] initWithImage:[UIImage imageNamed:@"2tchSmall.png"]];
             currentMessageIndex = 0;
         }
+        popup.topMostView = [UIApplication sharedApplication].keyWindow;
         if (modalSwitch.on) {
             [popup presentModalFromBarButtonItem:sender inView:self.view animated:animationSwitch.on];
         } else {
@@ -88,8 +89,10 @@
         }
         else if (currentMessageIndex == 2) {
             popup = [[UZPopupView alloc] initWithContentView:testContentView contentSize:CGSizeMake(203, 63)];
+            popup.contentSize = CGSizeMake(240, 100);
             currentMessageIndex = 0;
         }
+        popup.topMostView = [UIApplication sharedApplication].keyWindow;
         if (modalSwitch.on) {
             [popup presentModalAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
         } else {
