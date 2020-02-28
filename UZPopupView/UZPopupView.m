@@ -177,11 +177,11 @@
     }
 }
 
-- (CGSize) size {
+- (CGSize) contentSize {
     return contentBounds.size;
 }
 
-- (void) setSize:(CGSize)size {
+- (void) setContentSize:(CGSize)size {
     contentBounds.size = size;
 }
 
@@ -202,14 +202,6 @@
     [_peekView setOwnerView:self];
 
     [self.topMostView addSubview:_peekView];
-}
-
-- (void)presentModalAtPoint:(CGPoint)p inView:(UIView*)inView {
-    if (!_topMostView) {
-        _topMostView = [[self class] extractTopMostView:inView];
-    }
-    [self createAndAttachTouchPeekView];
-    [self showAtPoint:[inView convertPoint:p toView:self.topMostView] inView:self.topMostView animated:NO];
 }
 
 - (void)presentModalAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated {
@@ -377,7 +369,7 @@
         
         // popup
         if (animated) {
-            [self popup];
+            [self popupAnimation];
         }
     }
 }
@@ -448,7 +440,7 @@
 
 #pragma mark - Popup and dismiss
 
-- (void)popup {
+- (void) popupAnimation {
     CAKeyframeAnimation *positionAnimation = [self getPositionAnimationForPopup];
     CAKeyframeAnimation *alphaAnimation = [self getAlphaAnimationForPopup];
 
@@ -481,13 +473,13 @@
 
 - (void)dismiss:(BOOL)animtaed {
     if (animtaed) {
-        [self dismiss];
+        [self dismissAnimation];
     } else {
         [self removeFromSuperview];
     }
 }
 
-- (void)dismiss {
+- (void) dismissAnimation {
     CAKeyframeAnimation *positionAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
 
     float r1 = 1.0;

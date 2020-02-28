@@ -42,7 +42,6 @@
 }
 
 - (IBAction)pushButton:(id)sender;
-- (void)didDismissModal:(UZPopupView*)popupview;
 - (void)didTouchPopupView:(UZPopupView*)sender;
 @end
 

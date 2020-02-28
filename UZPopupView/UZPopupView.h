@@ -64,12 +64,12 @@ typedef enum {
 @class UZPopupView;
 
 @protocol UZPopupViewModalDelegate <NSObject>
-- (void)didDismissModal:(UZPopupView*)popupview;
+- (void) didDismissModal:(UZPopupView*)popupview;
 @end
 
 
 @interface UZPopupView : UIView 
-@property (nonatomic) CGSize size;
+@property (nonatomic) CGSize contentSize;
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) UIImage *image;
 @property (nonatomic, readonly) UIView *contentView;
@@ -82,12 +82,9 @@ typedef enum {
 - (instancetype) initWithContentView:(UIView*)newContentView contentSize:(CGSize)contentSize;
 
 - (void) showAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated;
-
-- (void) presentModalAtPoint:(CGPoint)p inView:(UIView*)inView;
 - (void) presentModalAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated;
 
 - (BOOL) shouldBeDismissedFor:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void) dismiss;
 - (void) dismiss:(BOOL)animtaed;
 - (void) dismissModal;
 
