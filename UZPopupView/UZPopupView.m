@@ -43,7 +43,7 @@
 
 @implementation TouchPeekView
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         [self setBackgroundColor:[UIColor clearColor]];
     }
@@ -84,14 +84,15 @@
     id            target;
     SEL            action;
     
-    TouchPeekView    *peekView;
+    __weak UIView *_topMostView;
+    TouchPeekView    *_peekView;
     
-    BOOL        animatedWhenAppering;
+    BOOL        _animatedWhenAppering;
 }
 
 #pragma mark - Prepare
 
-- (void)setupGradientColors {        
+- (void)setupGradientColors {
     CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
     CGFloat colors[] =
     {
@@ -173,38 +174,42 @@
     }
 }
 
++ (UIView *) topMostView:(UIView *)view {
+    UIView *superView = view.superview;
+    if (superView) {
+        return [self topMostView:superView];
+    } else {
+        return view;
+    }
+}
+
 #pragma mark - Present modal
 
-- (void) createAndAttachTouchPeekView {
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+- (void) createAndAttachTouchPeekView:(UIView*)parentView {
+    [_peekView removeFromSuperview];
+    _peekView = nil;
+    _peekView = [[TouchPeekView alloc] initWithFrame:parentView.frame];
+    [_peekView setOwnerView:self];
 
-    [peekView removeFromSuperview];
-    peekView = nil;
-    peekView = [[TouchPeekView alloc] initWithFrame:window.frame];
-    [peekView setOwnerView:self];
-
-    [window addSubview:peekView];
+    [parentView addSubview:_peekView];
 }
 
 - (void)presentModalAtPoint:(CGPoint)p inView:(UIView*)inView {
-    animatedWhenAppering = YES;
-    [self createAndAttachTouchPeekView];
-    [self showAtPoint:[inView convertPoint:p toView:[[UIApplication sharedApplication] keyWindow]] inView:[[UIApplication sharedApplication] keyWindow]];
+    _topMostView = [[self class] topMostView:inView];
+    [self createAndAttachTouchPeekView:_topMostView];
+    [self showAtPoint:[inView convertPoint:p toView:_topMostView] inView:_topMostView animated:NO];
 }
 
 - (void)presentModalAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated {
-    animatedWhenAppering = animated;
-    [self createAndAttachTouchPeekView];
-    [self showAtPoint:[inView convertPoint:p toView:[[UIApplication sharedApplication] keyWindow]] inView:[[UIApplication sharedApplication] keyWindow] animated:animated];
+    _topMostView = [[self class] topMostView:inView];
+    [self createAndAttachTouchPeekView:_topMostView];
+    [self showAtPoint:[inView convertPoint:p toView:_topMostView] inView:_topMostView animated:animated];
 }
 
 #pragma mark - Show as normal view
 
-- (void)showAtPoint:(CGPoint)p inView:(UIView*)inView {
-    [self showAtPoint:p inView:inView animated:NO];
-}
-
 - (void)showAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated {
+    _animatedWhenAppering = animated;
     if ((p.y - contentBounds.size.height - POPUP_ROOT_SIZE.height - 2 * CONTENT_OFFSET.height - SHADOW_OFFSET.height) < 0) {
         direction = UZPopupViewDown;
     }
@@ -449,12 +454,12 @@
 }
 
 - (void)dismissModal {
-    if ([peekView superview]) {
+    if ([_peekView superview]) {
         [_delegate didDismissModal:self];
     }
-    [peekView removeFromSuperview];
+    [_peekView removeFromSuperview];
 
-    [self dismiss:animatedWhenAppering];
+    [self dismiss:_animatedWhenAppering];
 }
 
 - (void)dismiss:(BOOL)animtaed {
@@ -583,7 +588,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     DNSLogMethod();
 
-    if ([self shouldBeDismissedFor:touches withEvent:event] && peekView != nil) {
+    if ([self shouldBeDismissedFor:touches withEvent:event] && _peekView != nil) {
         [self dismissModal];
         return;
     }
@@ -668,15 +673,15 @@
 @implementation UZPopupView(UsingPrivateMethod)
 
 - (void)presentModalFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView {
-    animatedWhenAppering = YES;
-    [self createAndAttachTouchPeekView];
-    [self showFromBarButtonItem:barButtonItem inView:[[UIApplication sharedApplication] keyWindow]];
+    _topMostView = [[self class] topMostView:inView];
+    [self createAndAttachTouchPeekView:_topMostView];
+    [self showFromBarButtonItem:barButtonItem inView:_topMostView];
 }
 
 - (void)presentModalFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView animated:(BOOL)animated {
-    animatedWhenAppering = animated;
-    [self createAndAttachTouchPeekView];
-    [self showFromBarButtonItem:barButtonItem inView:[[UIApplication sharedApplication] keyWindow] animated:animated];
+    _topMostView = [[self class] topMostView:inView];
+    [self createAndAttachTouchPeekView:_topMostView];
+    [self showFromBarButtonItem:barButtonItem inView:_topMostView animated:animated];
 }
 
 - (void)showFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView {

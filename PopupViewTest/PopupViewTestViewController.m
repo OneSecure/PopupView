@@ -90,10 +90,11 @@
             popup = [[UZPopupView alloc] initWithContentView:testContentView contentSize:CGSizeMake(203, 63)];
             currentMessageIndex = 0;
         }
-        if (modalSwitch.on)
+        if (modalSwitch.on) {
             [popup presentModalAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
-        else
+        } else {
             [popup showAtPoint:[touch locationInView:self.view] inView:self.view animated:animationSwitch.on];
+        }
         [popup addTarget:self action:@selector(didTouchPopupView:)];
         [popup setDelegate:self];
     }

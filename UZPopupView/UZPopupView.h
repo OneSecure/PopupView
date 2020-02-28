@@ -75,7 +75,6 @@ typedef enum {
 - (instancetype) initWithImage:(UIImage*)newImage;
 - (instancetype) initWithContentView:(UIView*)newContentView contentSize:(CGSize)contentSize;
 
-- (void) showAtPoint:(CGPoint)p inView:(UIView*)inView;
 - (void) showAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated;
 
 - (void) presentModalAtPoint:(CGPoint)p inView:(UIView*)inView;
