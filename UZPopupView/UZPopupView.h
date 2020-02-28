@@ -44,6 +44,10 @@
 #define DEFAULT_TITLE_SIZE              20
 
 #define ALPHA                           0.6
+#define COLOR1                          155.0/255.0
+#define COLOR2                          70.0/255.0
+#define COLOR3                          20.0/255.0
+#define COLOR4                          0.0/255.0
 
 #define BAR_BUTTON_ITEM_UPPER_MARGIN    10
 #define BAR_BUTTON_ITEM_BOTTOM_MARGIN   5
@@ -65,10 +69,12 @@ typedef enum {
 
 
 @interface UZPopupView : UIView 
+@property (nonatomic) CGSize size;
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) UIImage *image;
 @property (nonatomic, readonly) UIView *contentView;
 @property (nonatomic, weak) id <UZPopupViewModalDelegate> delegate;
+@property (nonatomic, weak) UIView *topMostView;
 
 - (instancetype) initWithString:(NSString*)newValue withFontOfSize:(float)newFontSize;
 - (instancetype) initWithString:(NSString*)newValue;
@@ -91,10 +97,7 @@ typedef enum {
 
 @interface UZPopupView(UsingPrivateMethod)
 
-- (void) showFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView;
 - (void) showFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView animated:(BOOL)animated;
-
-- (void) presentModalFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView;
 - (void) presentModalFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView animated:(BOOL)animated;
 
 @end

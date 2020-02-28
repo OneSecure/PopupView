@@ -36,8 +36,7 @@
 #define DNSLogMethod()   do { NSLog(@"[%s] %@", class_getName([self class]), NSStringFromSelector(_cmd)); } while(0)
 
 
-@interface TouchPeekView : UIView {
-}
+@interface TouchPeekView : UIView
 @property (nonatomic, weak) UZPopupView *ownerView;
 @end
 
@@ -84,7 +83,6 @@
     id            target;
     SEL            action;
     
-    __weak UIView *_topMostView;
     TouchPeekView    *_peekView;
     
     BOOL        _animatedWhenAppering;
@@ -96,18 +94,23 @@
     CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
     CGFloat colors[] =
     {
-        155.0 / 255.0, 155.0 / 255.0, 155.0 / 255.0, ALPHA,
-        70.0 / 255.0, 70.0 / 255.0, 70.0 / 255.0, ALPHA,
+        COLOR1, COLOR1, COLOR1, ALPHA,
+        COLOR2, COLOR2, COLOR2, ALPHA,
     };
     gradient = CGGradientCreateWithColorComponents(rgb, colors, NULL, sizeof(colors)/(sizeof(colors[0])*4));
     
     CGFloat colors2[] =
     {
-        20.0 / 255.0, 20.0 / 255.0, 20.0 / 255.0, ALPHA,
-        0.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0, ALPHA,
+        COLOR3, COLOR3, COLOR3, ALPHA,
+        COLOR4, COLOR4, COLOR4, ALPHA,
     };
     gradient2 = CGGradientCreateWithColorComponents(rgb, colors2, NULL, sizeof(colors2)/(sizeof(colors2[0])*4));
     CGColorSpaceRelease(rgb);
+}
+
+- (UIView *) topMostView {
+    NSAssert(_topMostView, @"_topMostView must NOT nil.");
+    return _topMostView;
 }
 
 - (instancetype) initWithString:(NSString*)newValue {
@@ -174,10 +177,18 @@
     }
 }
 
-+ (UIView *) topMostView:(UIView *)view {
+- (CGSize) size {
+    return contentBounds.size;
+}
+
+- (void) setSize:(CGSize)size {
+    contentBounds.size = size;
+}
+
++ (UIView *) extractTopMostView:(UIView *)view {
     UIView *superView = view.superview;
     if (superView) {
-        return [self topMostView:superView];
+        return [[self class] extractTopMostView:superView];
     } else {
         return view;
     }
@@ -185,25 +196,28 @@
 
 #pragma mark - Present modal
 
-- (void) createAndAttachTouchPeekView:(UIView*)parentView {
+- (void) createAndAttachTouchPeekView {
     [_peekView removeFromSuperview];
-    _peekView = nil;
-    _peekView = [[TouchPeekView alloc] initWithFrame:parentView.frame];
+    _peekView = [[TouchPeekView alloc] initWithFrame:self.topMostView.frame];
     [_peekView setOwnerView:self];
 
-    [parentView addSubview:_peekView];
+    [self.topMostView addSubview:_peekView];
 }
 
 - (void)presentModalAtPoint:(CGPoint)p inView:(UIView*)inView {
-    _topMostView = [[self class] topMostView:inView];
-    [self createAndAttachTouchPeekView:_topMostView];
-    [self showAtPoint:[inView convertPoint:p toView:_topMostView] inView:_topMostView animated:NO];
+    if (!_topMostView) {
+        _topMostView = [[self class] extractTopMostView:inView];
+    }
+    [self createAndAttachTouchPeekView];
+    [self showAtPoint:[inView convertPoint:p toView:self.topMostView] inView:self.topMostView animated:NO];
 }
 
 - (void)presentModalAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated {
-    _topMostView = [[self class] topMostView:inView];
-    [self createAndAttachTouchPeekView:_topMostView];
-    [self showAtPoint:[inView convertPoint:p toView:_topMostView] inView:_topMostView animated:animated];
+    if (!_topMostView) {
+        _topMostView = [[self class] extractTopMostView:inView];
+    }
+    [self createAndAttachTouchPeekView];
+    [self showAtPoint:[inView convertPoint:p toView:self.topMostView] inView:self.topMostView animated:animated];
 }
 
 #pragma mark - Show as normal view
@@ -455,9 +469,12 @@
 
 - (void)dismissModal {
     if ([_peekView superview]) {
-        [_delegate didDismissModal:self];
+        if ([_delegate respondsToSelector:@selector(didDismissModal:)]) {
+            [_delegate didDismissModal:self];
+        }
     }
     [_peekView removeFromSuperview];
+    _peekView = nil;
 
     [self dismiss:_animatedWhenAppering];
 }
@@ -618,8 +635,13 @@
     // draw shadow, and base
     CGContextSaveGState(context);
 
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, ALPHA);
-    CGContextSetShadowWithColor (context, CGSizeMake(0, 2), 2, [[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] CGColor]);
+    if (direction & UZPopupViewUp) {
+        CGContextSetRGBFillColor(context, COLOR4, COLOR4, COLOR4, ALPHA);
+    } else {
+        CGContextSetRGBFillColor(context, COLOR1, COLOR1, COLOR1, ALPHA);
+    }
+    UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    CGContextSetShadowWithColor (context, CGSizeMake(0, 2), 2, [shadowColor CGColor]);
     [self makePathCircleCornerRect:popupRect radius:10 popPoint:pointToBeShown];
     CGContextClosePath(context);
     CGContextFillPath(context);
@@ -672,20 +694,23 @@
 
 @implementation UZPopupView(UsingPrivateMethod)
 
-- (void)presentModalFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView {
-    _topMostView = [[self class] topMostView:inView];
-    [self createAndAttachTouchPeekView:_topMostView];
-    [self showFromBarButtonItem:barButtonItem inView:_topMostView];
-}
-
 - (void)presentModalFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView animated:(BOOL)animated {
-    _topMostView = [[self class] topMostView:inView];
-    [self createAndAttachTouchPeekView:_topMostView];
-    [self showFromBarButtonItem:barButtonItem inView:_topMostView animated:animated];
+    if (!_topMostView) {
+        _topMostView = [[self class] extractTopMostView:inView];
+    }
+    [self createAndAttachTouchPeekView];
+    [self showFromBarButtonItem:barButtonItem inView:self.topMostView animated:animated];
 }
 
-- (void)showFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView {
-    [self showFromBarButtonItem:barButtonItem inView:inView animated:YES];
++ (UIView*) view:(UIView*)view parentOfClass:(Class)class {
+    UIView *parent = view.superview;
+    if (parent == nil) {
+        return nil;
+    }
+    if ([parent isKindOfClass:class]) {
+        return parent;
+    }
+    return [[self class] view:parent parentOfClass:class];
 }
 
 - (void)showFromBarButtonItem:(UIBarButtonItem*)barButtonItem inView:(UIView*)inView animated:(BOOL)animated {
@@ -699,9 +724,9 @@
     
     BOOL isOnNavigationBar = YES;
     
-    if ([targetSuperview isKindOfClass:[UINavigationBar class]]) {
+    if ([[self class] view:targetView parentOfClass:[UINavigationBar class]]) {
         isOnNavigationBar = YES;
-    } else if ([targetSuperview isKindOfClass:[UIToolbar class]]) {
+    } else if ([[self class] view:targetView parentOfClass:[UIToolbar class]]) {
         isOnNavigationBar = NO;
     } else {
         // error
