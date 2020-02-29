@@ -33,11 +33,14 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#if !defined(NDEBUG)
 #define DNSLogMethod()   do { NSLog(@"[%s] %@", class_getName([self class]), NSStringFromSelector(_cmd)); } while(0)
-
+#else
+#define DNSLogMethod() do { ; } while(0)
+#endif
 
 @interface TouchPeekView : UIView
-@property (nonatomic, weak) UZPopupView *ownerView;
+@property (nonatomic, weak) UZPopupView *responseView;
 @end
 
 @implementation TouchPeekView
@@ -51,8 +54,8 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     DNSLogMethod();
-    if ([_ownerView shouldBeDismissedFor:touches withEvent:event]) {
-        [_ownerView dismissModal];
+    if ([_responseView shouldBeDismissedFor:touches withEvent:event]) {
+        [_responseView dismissModal];
     }
 }
 
@@ -80,8 +83,8 @@
     
     float        horizontalOffset;
     UZPopupViewDirection    direction;
-    id            target;
-    SEL            action;
+    id            _target;
+    SEL            _action;
     
     TouchPeekView    *_peekView;
     
@@ -172,8 +175,8 @@
 
 - (void)addTarget:(id)newTarget action:(SEL)newAction {
     if ([newTarget respondsToSelector:newAction]) {
-        target = newTarget;
-        action = newAction;
+        _target = newTarget;
+        _action = newAction;
     }
 }
 
@@ -199,7 +202,7 @@
 - (void) createAndAttachTouchPeekView {
     [_peekView removeFromSuperview];
     _peekView = [[TouchPeekView alloc] initWithFrame:self.topMostView.frame];
-    [_peekView setOwnerView:self];
+    _peekView.responseView = self;
 
     [self.topMostView addSubview:_peekView];
 }
@@ -374,7 +377,7 @@
     }
 }
 
-#pragma mark - Core Animation call back
+#pragma mark - CAAnimationDelegate - Core Animation call back
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
     [self removeFromSuperview];
@@ -602,13 +605,13 @@
         return;
     }
 
-    if ([target respondsToSelector:action]) {
+    if ([_target respondsToSelector:_action]) {
 #if 1
-        IMP imp = [target methodForSelector:action];
+        IMP imp = [_target methodForSelector:_action];
         void (*func)(id, SEL, id) = (void *)imp;
-        func(target, action, self);
+        func(_target, _action, self);
 #else
-        [target performSelector:action withObject:self];
+        [_target performSelector:_action withObject:self];
 #endif
     }
 }
